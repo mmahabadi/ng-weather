@@ -1,16 +1,19 @@
-import { Component } from '@angular/core';
-import {LocationService} from "../location.service";
+import { Component, ViewChild } from "@angular/core";
+import { LocationService } from "../location.service";
 
 @Component({
-  selector: 'app-zipcode-entry',
-  templateUrl: './zipcode-entry.component.html'
+  selector: "app-zipcode-entry",
+  templateUrl: "./zipcode-entry.component.html",
 })
 export class ZipcodeEntryComponent {
+  zipcode = "";
 
-  constructor(private service : LocationService) { }
+  constructor(private service: LocationService) {}
 
-  addLocation(zipcode : string){
-    this.service.addLocation(zipcode);
+  addLocation() {
+    if (!this.zipcode) return;
+
+    this.service.addLocation(this.zipcode);
+    this.zipcode = "";
   }
-
 }
