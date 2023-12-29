@@ -54,8 +54,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "ng-weather:build",
-            "proxyConfig": "proxy.conf.json"
+            "buildTarget": "ng-weather:build"
           },
           "configurations": {
             "production": {
