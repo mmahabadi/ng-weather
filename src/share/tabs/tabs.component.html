@@ -1,0 +1,18 @@
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    @for (tab of tabs; track tab) {
+    <li role="presentation" class="{{ tab.active ? 'active' : '' }}">
+      <a href="#" role="tab" data-toggle="tab" (click)="selectTab(tab)">
+        <span>{{ tab.title }}</span>
+        <span class="close" (click)="closeTab($event, tab)">&times;</span>
+      </a>
+    </li>
+    }
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <ng-content></ng-content>
+  </div>
+</div>

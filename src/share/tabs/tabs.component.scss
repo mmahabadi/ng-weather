@@ -1,0 +1,33 @@
+.nav-tabs {
+  li {
+    a {
+      background-color: #617aa0;
+      border: 1px solid #333;
+      border-bottom: none;
+      border-radius: 0;
+      color: #fff;
+
+      .close {
+        margin-left: 5px;
+        margin-top: -2px;
+        color: #fff;
+      }
+    }
+
+    &.active a {
+      background-color: #fff;
+      color: #617aa0;
+
+      .close {
+        color: #617aa0;
+      }
+    }
+  }
+}
+
+.tab-content {
+  border: 1px solid #333;
+  padding: 20px;
+  border-radius: 0;
+  background-color: #fff;
+}
