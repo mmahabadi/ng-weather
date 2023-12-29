@@ -1,30 +1,39 @@
-<app-tabs (onCloseTab)="removeLocation($event)">
-  @for (location of currentConditionsByZip(); track location) {
-  <app-tab
-    [title]="location.data.name + ' (' + location.zip + ')'"
-    [key]="location.zip"
-  >
-    <div class="well flex" (click)="showForecast(location.zip)">
-      <div>
-        <h4>Current conditions: {{ location.data.weather[0].main }}</h4>
-        <h4>Temperatures today:</h4>
-        <p>
-          Current {{ location.data.main.temp | number : ".0-0" }} - Max
-          {{ location.data.main.temp_max | number : ".0-0" }} - Min
-          {{ location.data.main.temp_min | number : ".0-0" }}
-        </p>
-        <p>
-          <a [routerLink]="['/forecast', location.zip]">
-            Show 5-day forecast for {{ location.data.name }}
-          </a>
-        </p>
-      </div>
-      <div>
-        <img
-          [src]="weatherService.getWeatherIcon(location.data.weather[0].id)"
-        />
-      </div>
-    </div>
-  </app-tab>
-  }
-</app-tabs>
+<ng-container *ngIf="currentConditionsByZip().length > 0; else alert">
+  <app-tabs (onCloseTab)="removeLocation($event)">
+    <ng-container *ngFor="let location of currentConditionsByZip()">
+      <app-tab
+        [title]="location.data.name + ' (' + location.zip + ')'"
+        [key]="location.zip"
+      >
+        <div class="well flex" (click)="showForecast(location.zip)">
+          <div>
+            <h4>Current conditions: {{ location.data.weather[0].main }}</h4>
+            <h4>Temperatures today:</h4>
+            <p>
+              Current {{ location.data.main.temp | number : ".0-0" }} - Max
+              {{ location.data.main.temp_max | number : ".0-0" }} - Min
+              {{ location.data.main.temp_min | number : ".0-0" }}
+            </p>
+            <p>
+              <a [routerLink]="['/forecast', location.zip]">
+                Show 5-day forecast for {{ location.data.name }}
+              </a>
+            </p>
+          </div>
+          <div>
+            <img
+              [src]="weatherService.getWeatherIcon(location.data.weather[0].id)"
+            />
+          </div>
+        </div>
+      </app-tab>
+    </ng-container>
+  </app-tabs>
+</ng-container>
+
+<ng-template #alert>
+  <div class="alert alert-info">
+    <h4>There are no locations to display.</h4>
+    <p>Please add a location by entering a zip code in the search box above.</p>
+  </div>
+</ng-template>
