@@ -1,0 +1,14 @@
+{
+  "/api/weather": {
+    "target": "http://api.openweathermap.org",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api/weather": "" }
+  },
+  "/api/icons": {
+    "target": "https://raw.githubusercontent.com",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api/icons": "" }
+  }
+}
