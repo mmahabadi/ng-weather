@@ -6,6 +6,7 @@ import { ConditionsAndZip } from "./conditions-and-zip.type";
 import { Forecast } from "./forecasts-list/forecast.type";
 import { LocationService } from "./location.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { CacheService } from "./cache.service";
 
 @Injectable({
   //I prepared provided root in order to make this service tree-shakable
@@ -20,7 +21,8 @@ export class WeatherService {
 
   constructor(
     private http: HttpClient,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private cacheService: CacheService
   ) {
     this.locationService.locations$
       .pipe(takeUntilDestroyed())
@@ -34,24 +36,25 @@ export class WeatherService {
   }
 
   addCurrentConditions(zipcode: string): void {
+    // generate the url for the API call and use it as the key for the cache
+    const url = `${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`;
+    
     // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
-    this.http
-      .get<CurrentConditions>(
-        `${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`
-      )
-      .subscribe(
-        (data) =>
-          this.currentConditions.update((conditions) => [
-            ...conditions,
-            { zip: zipcode, data },
-          ]),
-        (error) => {
-          alert("Could not find weather data for " + zipcode);
-          // remove the zipcode from the list of locations when the API call fails
-          // in order to keep the UI in sync with the data
-          this.locationService.removeLocation(zipcode);
-        }
-      );
+    this.http.get<CurrentConditions>(url).subscribe(
+      (data) => {
+        this.currentConditions.update((conditions) => [
+          ...conditions,
+          { zip: zipcode, data },
+        ]);
+        this.cacheService.set(url, data);
+      },
+      (error) => {
+        alert("Could not find weather data for " + zipcode);
+        // remove the zipcode from the list of locations when the API call fails
+        // in order to keep the UI in sync with the data
+        this.locationService.removeLocation(zipcode);
+      }
+    );
   }
 
   removeCurrentConditions(zipcode: string) {

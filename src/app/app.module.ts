@@ -4,17 +4,16 @@ import { FormsModule } from "@angular/forms";
 
 import { AppComponent } from "./app.component";
 import { ZipcodeEntryComponent } from "./zipcode-entry/zipcode-entry.component";
-import { LocationService } from "./location.service";
 import { ForecastsListComponent } from "./forecasts-list/forecasts-list.component";
-import { WeatherService } from "./weather.service";
 import { CurrentConditionsComponent } from "./current-conditions/current-conditions.component";
 import { MainPageComponent } from "./main-page/main-page.component";
 import { RouterModule } from "@angular/router";
 import { routing } from "./app.routing";
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { environment } from "../environments/environment";
 import { ShareModule } from "share/share.module";
+import { CacheInterceptor } from "./cache.interceptor";
 
 @NgModule({
   declarations: [
@@ -35,7 +34,17 @@ import { ShareModule } from "share/share.module";
     }),
     ShareModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CacheInterceptor,
+      multi: true,
+    },
+    {
+      provide: "CACHE_DURATION",
+      useValue: 2 * 60 * 60 * 1000, // Default caching duration: 2 hours
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
